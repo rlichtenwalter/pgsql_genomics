@@ -4,7 +4,7 @@ I. COMPATIBILITY
 This software assumes that you are running PostgreSQL Release 9.4 on GNU/Linux x86_64. It was tested on CentOS 6.6. Older versions of PostgreSQL will not work because of usage of 'WITH ORDINALITY'. Other architectures and GNU/Linux variants may work but are untested.
 
 II. USAGE
-On a machine with a complete PostgreSQL 9.4 installation, run the script 'setup.sh' in the top-level directory. You should have both the PostgreSQL server and the PostgreSQL client tools installed.
+On a machine with a complete PostgreSQL 9.4 installation, run the script 'setup.sh' in the top-level directory. You should have both the PostgreSQL server and the PostgreSQL client tools installed. Note that this script must be run as root because it copies files into privileged locations.
 
 III. BENCHMARKING NOTES
 This distribution generates fake data that is roughly designed to represent the test data in the paper 'Efficient Storage of Genotypic Data in Relational Databases for Rapid Retrieval'. The paper did *NOT* use fake data for its benchmarking. It used a real cohort of 3104 individuals and their unimputed and imputed genotypes, but privacy protections for the cohort and data volume require us not to release this data. Notably, the fake data generation uses a biased random number generation procedure to roughly represent the homogeneity that results from low alternate allele frequencies in variants. The fake sample-major data and variant-major data is *NOT* the same. The real benchmark data in the paper for sample-major and variant-major representations *WAS* the same.
