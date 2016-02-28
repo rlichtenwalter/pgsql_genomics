@@ -1,0 +1,13 @@
+=== Efficient Storage of Genotypic Data in Relational Databases for Rapid Retrieval ===
+
+I. COMPATIBILITY
+This software assumes that you are running PostgreSQL Release 9.4 on GNU/Linux x86_64. It was tested on CentOS 6.6. Older versions of PostgreSQL will not work because of usage of 'WITH ORDINALITY'. Other architectures and GNU/Linux variants may work but are untested.
+
+II. USAGE
+On a machine with a complete PostgreSQL 9.4 installation, run the script 'setup.sh' in the top-level directory. You should have both the PostgreSQL server and the PostgreSQL client tools installed.
+
+III. BENCHMARKING NOTES
+This distribution generates fake data that is roughly designed to represent the test data in the paper 'Efficient Storage of Genotypic Data in Relational Databases for Rapid Retrieval'. The paper did *NOT* use fake data for its benchmarking. It used a real cohort of 3104 individuals and their unimputed and imputed genotypes, but privacy protections for the cohort and data volume require us not to release this data. Notably, the fake data generation uses a biased random number generation procedure to roughly represent the homogeneity that results from low alternate allele frequencies in variants. The fake sample-major data and variant-major data is *NOT* the same. The real benchmark data in the paper for sample-major and variant-major representations *WAS* the same.
+
+IV. OTHER NOTES
+The SQL code and C code here is very similar to but not identical to the code used in the paper. This is because the test platform was part of a much broader system incorporating many additional tables and types of data. Additionally, that system included a wide variety of extremely complex, optimized queries making use of CTEs, window functions, dynamic SQL, and other features of PostgreSQL to achieve extremely high-performance. If you are interested in obtaining some of this additional code for use with a built-out version of this code, please contact the authors. We strove to sanitize and minimize this release so that it was as simple as possible.
