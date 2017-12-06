@@ -21,12 +21,12 @@ CREATE TYPE imputed_genotype;
 
 CREATE FUNCTION imputed_genotype_in( CSTRING )
 	RETURNS imputed_genotype
-	AS '$libdir/user_defined/imputed_genotype'
+	AS '$libdir/pgsql_genomics/imputed_genotype'
 	LANGUAGE C IMMUTABLE STRICT;
 
 CREATE FUNCTION imputed_genotype_out( imputed_genotype )
 	RETURNS CSTRING
-	AS '$libdir/user_defined/imputed_genotype'
+	AS '$libdir/pgsql_genomics/imputed_genotype'
 	LANGUAGE C IMMUTABLE STRICT;
 
 CREATE TYPE imputed_genotype (
@@ -39,7 +39,7 @@ CREATE TYPE imputed_genotype (
 
 CREATE OR REPLACE FUNCTION array_multi_index( ANYARRAY, INTEGER[] )
     RETURNS ANYARRAY
-    AS '$libdir/user_defined/array_multi_index'
+    AS '$libdir/pgsql_genomics/array_multi_index'
     LANGUAGE C IMMUTABLE STRICT;
 
 CREATE TYPE variant_data AS (
