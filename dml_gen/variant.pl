@@ -3,7 +3,7 @@
 use strict;
 use warnings FATAL => 'all';
 
-my $MAX_QUERY_ROWS = 1000000;
+my $MAX_QUERY_ROWS = 100000;
 
 my $header = "INSERT INTO variant (name,reference_allele,alternate_allele)\n";
 $header .= "SELECT x.name,x.reference_allele,x.alternate_allele\n";
