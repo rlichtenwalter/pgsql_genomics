@@ -3,7 +3,7 @@
 use strict;
 use warnings FATAL => 'all';
 
-my $MAX_QUERY_ROWS = 5;
+my $MAX_QUERY_ROWS = 1;
 
 my $header = "INSERT INTO genotype_array_sm (sample_ref,genotypes)\n";
 $header .= "SELECT sample.pk,x.genotypes\n";
