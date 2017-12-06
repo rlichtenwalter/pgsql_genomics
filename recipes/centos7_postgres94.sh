@@ -11,7 +11,6 @@ export PATH=/usr/pgsql-9.4/bin:$PATH
 postgresql94-setup initdb
 systemctl enable postgresql-9.4.service
 systemctl start postgresql-9.4.service
-chkconfig postgresql-9.4 on
 wget https://github.com/rlichtenwalter/pgsql_genomics/archive/master.zip
 unzip master.zip
 cd pgsql_genomics-master
