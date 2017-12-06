@@ -4,6 +4,7 @@
 command -v pg_config > /dev/null 2>&1 || { printf "Command 'pg_config' is required but not found in path. Make sure PostgreSQL client tools are installed. Aborting.\n" 1>&2; exit 1; }
 pg_libdir="$(pg_config --pkglibdir)"
 pg_installdir="$pg_libdir/pgsql_genomics"
+pg_hbafile=$(sudo -u postgres psql -t -P "format=unaligned" -c "SHOW hba_file;")
 mkdir -p -m 755 "$pg_installdir" || { printf "Unable to create directory '$pg_installdir' for installation into PostgreSQL. Aborting.\n" 1>&2 exit 1; }
 (
 	cd ./c &&
@@ -28,9 +29,11 @@ mkdir -p -m 755 "$pg_installdir" || { printf "Unable to create directory '$pg_in
 { ./dml_gen/genotype_array_vm.pl || { printf "Procedure for 'genotype_array_vm' table DML generation failed. Aborting.\n" 1>&2; exit 1; } } | gzip > ./dml/INSERT_genotype_array_vm.sql.gz
 
 # create the database and load the data
-psql -q -U postgres -f ./ddl/setup1.sql || { printf "Unable to perform setup for 'pgsql_genomics' database as user 'postgres'. Check UNIX account privileges and pg_hba.conf. Aborting.\n" 1>&2; exit 1; }
-psql -q -U postgres -f ./lib/tinyint-0.1.1/tinyint.sql || { printf "Unable to add 'tinyint' type to database 'pgsql_genomics'. Aborting.\n" 1>&2; exit 1; }
-psql -q -U postgres -f ./ddl/setup2.sql || { printf "Unable to perform setup for 'pgsql_genomics' database as user 'postgres'. Check UNIX account privileges and pg_hba.conf. Aborting.\n" 1>&2; exit 1; }
+sudo -u postgres psql -q -U postgres -f ./ddl/setup1.sql || { printf "Unable to perform setup for 'pgsql_genomics' database as user 'postgres'. Check UNIX account privileges and pg_hba.conf. Aborting.\n" 1>&2; exit 1; }
+sudo -u postgres psql -q -U postgres -f ./lib/tinyint-0.1.1/tinyint.sql || { printf "Unable to add 'tinyint' type to database 'pgsql_genomics'. Aborting.\n" 1>&2; exit 1; }
+sudo -u postgres psql -q -U postgres -f ./ddl/setup2.sql || { printf "Unable to perform setup for 'pgsql_genomics' database as user 'postgres'. Check UNIX account privileges and pg_hba.conf. Aborting.\n" 1>&2; exit 1; }
+sed -i "1s/^/local pgsql_genomics pgsql_genomics_owner trust\n/" "$pg_hbafile"
+sudo -u postgres psql -t -P "format=unaligned" -c "SELECT pg_reload_conf();"
 psql -q -U pgsql_genomics_owner -d pgsql_genomics -f ./ddl/functions.sql || { printf "Unable to create SQL functions. Aborting.\n" 1>&2; exit 1; }
 psql -q -U pgsql_genomics_owner -d pgsql_genomics -f ./ddl/sample.sql || { printf "Unable to create and fill 'sample' table. Aborting.\n" 1>&2; exit 1; }
 psql -q -U pgsql_genomics_owner -d pgsql_genomics -f ./ddl/variant.sql || { printf "Unable to create and fill 'variant' table. Aborting.\n" 1>&2; exit 1; }
@@ -40,3 +43,5 @@ psql -q -U pgsql_genomics_owner -d pgsql_genomics -f ./ddl/genotype_string_sm.sq
 psql -q -U pgsql_genomics_owner -d pgsql_genomics -f ./ddl/genotype_hstore_sm.sql || { printf "Unable to create and fill 'genotype_hstore_sm' table. Aborting.\n" 1>&2; exit 1; }
 psql -q -U pgsql_genomics_owner -d pgsql_genomics -f ./ddl/genotype_normalized.sql || { printf "Unable to create and fill 'genotype_normalized' table. Aborting.\n" 1>&2; exit 1; }
 
+printf "Setup completed successfully."
+printf "Please consider checking your 'pg_hba.conf' file to alter permissions to access the database. Permissions are currently set as 'local pgsql_genomics pgsql_genomics_owner trust'."
