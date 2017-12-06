@@ -1,6 +1,7 @@
 #! /bin/bash
 
-# ASSUMES root USER ON RECENT CENTOS 7 MINIMAL INSTALL
+# TO BE RUN AS root ON FRESH CENTOS 7 MINIMAL INSTALL
+
 yum -y update
 yum -y install wget unzip gcc perl dos2unix
 yum -y install epel-release
